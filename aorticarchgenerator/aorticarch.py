@@ -82,13 +82,13 @@ class AorticArch:
 
     @property
     def coordinates_high(self) -> np.ndarray:
-        branch_highs = [branch.coordinates_high for branch in self.branches.values()]
+        branch_highs = [branch.high for branch in self.branches.values()]
         high = np.max(branch_highs, axis=0)
         return high
 
     @property
     def coordinates_low(self) -> np.ndarray:
-        branch_lows = [branch.coordinates_low for branch in self.branches.values()]
+        branch_lows = [branch.low for branch in self.branches.values()]
         low = np.min(branch_lows, axis=0)
         return low
 
@@ -137,21 +137,19 @@ class AorticArch:
             distance_aorta_end_bct = n(36, 5)
             idx = int(np.round(distance_aorta_end_bct / aorta_resolution, 0))
             bct, bct_chs_points = brachiocephalic_trunk_static(
-                aorta.cl_coordinates[-idx], 1, rng
+                aorta.coordinates[-idx], 1, rng
             )
 
-            rsa, _ = right_subclavian(
-                bct.cl_coordinates[-1], bct_chs_points[-1], 1, rng
-            )
-            rcca, _ = right_common_carotid(bct.cl_coordinates[-1], 1, rng)
+            rsa, _ = right_subclavian(bct.coordinates[-1], bct_chs_points[-1], 1, rng)
+            rcca, _ = right_common_carotid(bct.coordinates[-1], 1, rng)
 
             distance_bct_lcca = n(16, 4)
             idx += int(np.round(distance_bct_lcca / aorta_resolution, 0))
-            lcca, _ = left_common_carotid(aorta.cl_coordinates[-idx], 1, rng)
+            lcca, _ = left_common_carotid(aorta.coordinates[-idx], 1, rng)
 
             distance_lcca_lsca = n(28, 3)
             idx += int(np.round(distance_lcca_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian(aorta.coordinates[-idx], 1, rng)
             arteries = {
                 "aorta": aorta,
                 "bct": bct,
@@ -165,12 +163,10 @@ class AorticArch:
             distance_aorta_end_bct = n(36, 3)
             idx = int(np.round(distance_aorta_end_bct / aorta_resolution, 0))
             bct, bct_chs_points = brachiocephalic_trunk_static(
-                aorta.cl_coordinates[-idx], bct_resolution, rng
+                aorta.coordinates[-idx], bct_resolution, rng
             )
-            rsa, _ = right_subclavian(
-                bct.cl_coordinates[-1], bct_chs_points[-1], 1, rng
-            )
-            rcca, _ = right_common_carotid(bct.cl_coordinates[-1], 1, rng)
+            rsa, _ = right_subclavian(bct.coordinates[-1], bct_chs_points[-1], 1, rng)
+            rcca, _ = right_common_carotid(bct.coordinates[-1], 1, rng)
 
             distance_aorta_lcca = n(bct.length * (2 / 3), bct.length * (3 / 10) / 3)
             distance_aorta_lcca = abs(distance_aorta_lcca)  # if distance < 0
@@ -179,12 +175,12 @@ class AorticArch:
             )  # if distance longer than bct
             lcca_idx = int(np.round(distance_aorta_lcca / bct_resolution, 0))
             lcca, _ = left_common_carotid_II(
-                bct.cl_coordinates[lcca_idx], resolution=1, rng=rng
+                bct.coordinates[lcca_idx], resolution=1, rng=rng
             )
 
             distance_bct_lsca = n(41, 2.5)
             idx += int(np.round(distance_bct_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian(aorta.coordinates[-idx], 1, rng)
             arteries = {
                 "aorta": aorta,
                 "bct": bct,
@@ -197,20 +193,20 @@ class AorticArch:
         elif self.arch_type == ArchType.IV:
             distance_aorta_end_rsca = n(42, 5)
             idx = int(np.round(distance_aorta_end_rsca / aorta_resolution, 0))
-            rsa, _ = right_subclavian_IV(aorta.cl_coordinates[-idx], 1, rng)
+            rsa, _ = right_subclavian_IV(aorta.coordinates[-idx], 1, rng)
 
             distance_rsca_co = n(20, 4)
             idx += int(np.round(distance_rsca_co / aorta_resolution, 0))
             co, co_chs_points = common_origin_VI(
-                aorta.cl_coordinates[-idx], bct_resolution, rng
+                aorta.coordinates[-idx], bct_resolution, rng
             )
 
-            rcca, _ = right_common_carotid(co.cl_coordinates[-1], 1, rng)
-            lcca, _ = left_common_carotid_II(co.cl_coordinates[-1], 1, rng)
+            rcca, _ = right_common_carotid(co.coordinates[-1], 1, rng)
+            lcca, _ = left_common_carotid_II(co.coordinates[-1], 1, rng)
 
             distance_bct_lsca = n(38, 3)
             idx += int(np.round(distance_bct_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian_IV(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian_IV(aorta.coordinates[-idx], 1, rng)
             arteries = {
                 "aorta": aorta,
                 "co": co,
@@ -224,21 +220,21 @@ class AorticArch:
             distance_aorta_end_bct = n(36, 3)
             idx = int(np.round(distance_aorta_end_bct / aorta_resolution, 0))
             bct, bct_chs_points = brachiocephalic_trunk_static(
-                aorta.cl_coordinates[-idx], 1, rng
+                aorta.coordinates[-idx], 1, rng
             )
 
             rcca, _ = right_common_carotid_V(
-                bct.cl_coordinates[-1], bct_chs_points[-1], 1, rng
+                bct.coordinates[-1], bct_chs_points[-1], 1, rng
             )
-            lcca, _ = left_common_carotid_II(bct.cl_coordinates[-1], 1, rng)
+            lcca, _ = left_common_carotid_II(bct.coordinates[-1], 1, rng)
 
             distance_bct_lsca = n(41, 2.5)
             idx += int(np.round(distance_bct_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian(aorta.coordinates[-idx], 1, rng)
 
             distance_lsca_rsca = n(20, 1)
             idx += int(np.round(distance_lsca_rsca / aorta_resolution, 0))
-            rsa, _ = right_subclavian_V(aorta.cl_coordinates[-idx], 1, rng)
+            rsa, _ = right_subclavian_V(aorta.coordinates[-idx], 1, rng)
 
             arteries = {
                 "aorta": aorta,
@@ -252,19 +248,19 @@ class AorticArch:
         elif self.arch_type == ArchType.Vb:
             distance_aorta_end_rcca = n(50, 2.5)
             idx = int(np.round(distance_aorta_end_rcca / aorta_resolution, 0))
-            rcca, _ = right_common_carotid_VII(aorta.cl_coordinates[-idx], 1, rng)
+            rcca, _ = right_common_carotid_VII(aorta.coordinates[-idx], 1, rng)
 
             distance_rcca_lcca = n(22, 3)
             idx += int(np.round(distance_rcca_lcca / aorta_resolution, 0))
-            lcca, _ = left_common_carotid(aorta.cl_coordinates[-idx], 1, rng)
+            lcca, _ = left_common_carotid(aorta.coordinates[-idx], 1, rng)
 
             distance_lcca_lsca = n(26, 2.5)
             idx += int(np.round(distance_lcca_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian(aorta.coordinates[-idx], 1, rng)
 
             distance_lsca_rsca = n(20, 1)
             idx += int(np.round(distance_lsca_rsca / aorta_resolution, 0))
-            rsa, _ = right_subclavian_V(aorta.cl_coordinates[-idx], 1, rng)
+            rsa, _ = right_subclavian_V(aorta.coordinates[-idx], 1, rng)
             arteries = {
                 "aorta": aorta,
                 "rcca": rcca,
@@ -277,22 +273,20 @@ class AorticArch:
             distance_aorta_end_bct = n(36, 3)
             idx = int(np.round(distance_aorta_end_bct / aorta_resolution, 0))
             bct, bct_chs_points = brachiocephalic_trunk_static(
-                aorta.cl_coordinates[-idx], 1, rng
+                aorta.coordinates[-idx], 1, rng
             )
 
             rcca, _ = right_common_carotid_V(
-                bct.cl_coordinates[-1], bct_chs_points[-1], 1, rng
+                bct.coordinates[-1], bct_chs_points[-1], 1, rng
             )
-            lcca, _ = left_common_carotid_II(bct.cl_coordinates[-1], 1, rng)
+            lcca, _ = left_common_carotid_II(bct.coordinates[-1], 1, rng)
 
             distance_bct_co = n(50, 1.5)
             idx += int(np.round(distance_bct_co / aorta_resolution, 0))
-            co, co_chs_points = common_origin_VI(aorta.cl_coordinates[-idx], 1, rng)
+            co, co_chs_points = common_origin_VI(aorta.coordinates[-idx], 1, rng)
 
-            rsa, _ = right_subclavian_VI(
-                co.cl_coordinates[-1], co_chs_points[-1], 1, rng
-            )
-            lsa, _ = left_subclavian_VI(co.cl_coordinates[-1], 1, rng)
+            rsa, _ = right_subclavian_VI(co.coordinates[-1], co_chs_points[-1], 1, rng)
+            lsa, _ = left_subclavian_VI(co.coordinates[-1], 1, rng)
             arteries = {
                 "aorta": aorta,
                 "bct": bct,
@@ -306,19 +300,19 @@ class AorticArch:
         elif self.arch_type == ArchType.VII:
             distance_aorta_end_rsca = n(38, 3.5)
             idx = int(np.round(distance_aorta_end_rsca / aorta_resolution, 0))
-            rsa, _ = right_subclavian_IV(aorta.cl_coordinates[-idx], 1, rng)
+            rsa, _ = right_subclavian_IV(aorta.coordinates[-idx], 1, rng)
 
             distance_rsca_rcca = n(20, 3)
             idx += int(np.round(distance_rsca_rcca / aorta_resolution, 0))
-            rcca, _ = right_common_carotid_VII(aorta.cl_coordinates[-idx], 1, rng)
+            rcca, _ = right_common_carotid_VII(aorta.coordinates[-idx], 1, rng)
 
             distance_rcca_lcca = n(20, 3)
             idx += int(np.round(distance_rcca_lcca / aorta_resolution, 0))
-            lcca, _ = left_common_carotid(aorta.cl_coordinates[-idx], 1, rng)
+            lcca, _ = left_common_carotid(aorta.coordinates[-idx], 1, rng)
 
             distance_lcca_lsca = n(27, 3)
             idx += int(np.round(distance_lcca_lsca / aorta_resolution, 0))
-            lsa, _ = left_subclavian(aorta.cl_coordinates[-idx], 1, rng)
+            lsa, _ = left_subclavian(aorta.coordinates[-idx], 1, rng)
 
             arteries = {
                 "aorta": aorta,
@@ -334,8 +328,8 @@ class AorticArch:
     def _scale(self, x: float, y: float, z: float, diameter: float) -> None:
         xyz_sclaing = np.array([x, y, z])
         for branch in self.branches.values():
-            branch.cl_radii *= diameter
-            branch.cl_coordinates *= xyz_sclaing
+            branch.radii *= diameter
+            branch.coordinates *= xyz_sclaing
 
     def _to_2d(self, axis_to_remove: str, dummy_value: float = 0) -> None:
         if axis_to_remove not in ["x", "y", "z"]:
@@ -345,14 +339,14 @@ class AorticArch:
         convert = {"x": 0, "y": 1, "z": 2}
         axis_to_remove = convert[axis_to_remove]
         for branch in self.branches.values():
-            branch.cl_coordinates[:, axis_to_remove] = dummy_value
+            branch.coordinates[:, axis_to_remove] = dummy_value
 
     def _rotate(
         self, rotate_y_deg: float, rotate_z_deg: float, rotate_x_deg: float
     ) -> None:
         for branch in self.branches.values():
-            branch.cl_coordinates = self._rotate_array(
-                array=branch.cl_coordinates,
+            branch.coordinates = self._rotate_array(
+                array=branch.coordinates,
                 x_deg=rotate_x_deg,
                 z_deg=rotate_z_deg,
                 y_deg=rotate_y_deg,

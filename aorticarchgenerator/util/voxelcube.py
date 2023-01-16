@@ -97,7 +97,7 @@ class VoxelCube:
         radius_padding: float,
     ):
 
-        for coordinates, radius in zip(branch.cl_coordinates, branch.cl_radii):
+        for coordinates, radius in zip(branch.coordinates, branch.radii):
             (
                 voxel_idxs_of_interest,
                 voxels_of_interest,
@@ -167,10 +167,10 @@ def create_empty_voxel_cube_from_branches(
 ) -> VoxelCube:
     spacing = np.array(spacing, dtype=np.float32)
 
-    branch_lows = [branch.coordinates_low for branch in branches.values()]
+    branch_lows = [branch.low for branch in branches.values()]
     low = np.min(branch_lows, axis=0)
 
-    branch_highs = [branch.coordinates_high for branch in branches.values()]
+    branch_highs = [branch.high for branch in branches.values()]
     high = np.max(branch_highs, axis=0)
 
     axes_length = high - low
