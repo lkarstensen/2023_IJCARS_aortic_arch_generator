@@ -24,11 +24,10 @@ from .util.voxelcube import (
 from .branch import Branch
 
 from enum import Enum
-from typing import Dict, List
+from typing import Dict
 import numpy as np
 from tempfile import gettempdir
 import os
-from dataclasses import dataclass
 
 
 class ArchType(str, Enum):
@@ -77,7 +76,7 @@ class AorticArch:
     @property
     def mesh_path(self) -> str:
         if self._mesh_path == None:
-            self._mesh_path = self.create_temp_mesh(0.99)
+            self._mesh_path = self.generate_temp_mesh(0.99)
         return self._mesh_path
 
     @property
@@ -92,7 +91,7 @@ class AorticArch:
         low = np.min(branch_lows, axis=0)
         return low
 
-    def create_temp_mesh(self, decimate_factor=0.99) -> str:
+    def generate_temp_mesh(self, decimate_factor=0.99) -> str:
         while True:
             pid = os.getpid()
             nr = int(os.times().elapsed)
@@ -103,10 +102,10 @@ class AorticArch:
                 except IOError:
                     continue
                 break
-        self.create_mesh(mesh_path, decimate_factor)
+        self.generate_mesh(mesh_path, decimate_factor)
         return mesh_path
 
-    def create_mesh(self, mesh_path: str, decimate_factor: 0.99) -> None:
+    def generate_mesh(self, mesh_path: str, decimate_factor: 0.99) -> None:
         voxel_cube = create_empty_voxel_cube_from_branches(
             self.branches, [0.6, 0.6, 0.9]
         )

@@ -26,4 +26,4 @@ for type in [
         os.mkdir(mesh_folder)
 
     mesh_path = os.path.join(mesh_folder, f"aortic_arch_type_{type.value}.obj")
-    vessels.create_mesh(mesh_path=mesh_path, decimate_factor=0.8)
+    vessels.generate_mesh(mesh_path=mesh_path, decimate_factor=0.8)
